@@ -1,5 +1,6 @@
 package com.cecilireid.fibonacci;
 
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -76,7 +77,13 @@ public class FibonacciController {
     public ResponseEntity<String> getRatio(@RequestParam int n) throws FibonacciOutOfRangeException {
         int dividend = fibonacci(n);
         int divisor = fibonacci(n-1);
-        return ResponseEntity.ok(String.valueOf(dividend / divisor));
+        String ratio;
+        try {
+            ratio = String.valueOf(dividend / divisor);
+        } catch (ArithmeticException e) {
+            return ResponseEntity.ok("0");
+        }
+        return ResponseEntity.ok(ratio);
     }
 
     private String getSequenceByFilename(String filename) throws FileNotFoundException {
