@@ -1,5 +1,7 @@
 package com.cecilireid.fibonacci;
 
+import org.apache.coyote.Response;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,7 +39,13 @@ public class FibonacciController {
 
     @GetMapping("getSequence")
     public ResponseEntity<String> retrieveFibonacciSequence(@RequestParam String fileName) throws IOException {
-        return ResponseEntity.ok(getSequence(fileName));
+        String sequence;
+        try {
+            sequence = getSequence(fileName);
+        } catch (FileNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("File not available. Please check request and try again " + e.getMessage());
+        }
+        return ResponseEntity.ok(sequence);
     }
 
     private String getSequence(String filename) throws FileNotFoundException {
